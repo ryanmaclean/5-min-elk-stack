@@ -1,0 +1,464 @@
+
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "Launches a pool of Mesos Masters",
+
+  "Parameters" : {
+    "InstanceAmi" : {
+      "Description" : "Mesos AMI",
+      "Type" : "String"
+    },
+    "InstanceType" : {
+      "Description" : "EC2 instance type",
+      "Type" : "String",
+      "Default" : "t2.micro",
+      "AllowedValues" : [
+        "t2.micro", "t2.small", "t2.medium",
+        "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge",
+        "c3.large", "c3.xlarge", "c3.2xlarge", "c3.4xlarge", "c3.8xlarge",
+        "c4.large", "c4.xlarge", "c4.2xlarge", "c4.4xlarge", "c4.8xlarge",
+        "r3.large", "r3.xlarge", "r3.2xlarge", "r3.4xlarge", "r3.8xlarge",
+        "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge",
+        "hs1.8xlarge", "g2.2xlarge"
+      ],
+      "ConstraintDescription" : "must be a valid, HVM-compatible EC2 instance type."
+    },
+    "KeyName" : {
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+      "Type" : "AWS::EC2::KeyPair::KeyName"
+    },
+    "ClusterId" : {
+      "Description" : "Mesos cluster ID",
+      "Type" : "String"
+    },
+    "ClusterSize" : {
+      "Description" : "Number of nodes to launch",
+      "Type" : "Number"
+    },
+    "QuorumSize" : {
+      "Description" : "Number of masters needed for Mesos replicated log registry quorum (should be ceiling(<ClusterSize>/2))",
+      "Type" : "Number"
+    },
+    "ExhibitorDiscoveryUrl" : {
+      "Description" : "Exhibitor URL that returns active ZooKeeper nodes ('getCluster') (e.g., http://<exhibitor_node>/exhibitor/v1/cluster/list)",
+      "Type" : "String"
+    },
+    "ZkClientSecurityGroup" : {
+      "Description" : "Security group ID for ZK clients (should grant access to ZK nodes)",
+      "Type" : "AWS::EC2::SecurityGroup::Id"
+    },
+    "AdminSecurityGroup" : {
+      "Description" : "Existing security group that should be granted administrative access to Mesos (e.g., 'sg-123456')",
+      "Type" : "AWS::EC2::SecurityGroup::Id"
+    },
+    "MarathonDockerImage" : {
+      "Description" : "The Marathon Docker image (format: 'registry:port/repository:version')",
+      "Type" : "String",
+      "Default" : "mesosphere/marathon:v0.8.2-RC3"
+    },
+    "MarathonLoggerDockerImage" : {
+      "Description" : "The marathon-logger Docker image (format: 'registry:port/repository:version')",
+      "Type" : "String",
+      "Default" : "thefactory/marathon-logger:latest"
+    },
+    "MarathonLoggerEventStore" : {
+      "Description" : "The marathon-logger event store connection string",
+      "Type" : "String",
+      "Default" : "in-memory://localhost/?max_length=100"
+    },
+    "DockerCredentials" : {
+      "Description" : "JSON string to be saved as .dockercfg",
+      "Type" : "String",
+      "Default" : "{}"
+    },
+    "LogstashConfig" : {
+      "Description" : "(optional) Config string for Logstash",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "ConfigScriptS3Bucket" : {
+      "Description" : "(optional) S3 bucket of an executable to download and run after other boot-time provisioning (e.g., \"my-bucket\").",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "ConfigScriptS3Path" : {
+      "Description" : "(optional) Path within ConfigScriptS3Bucket of an executable to download and run after other boot-time provisioning (e.g., \"/path/to/script\").",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "Subnets" : {
+      "Description" : "List of VPC subnet IDs for the cluster. Must match the passed AvailabilityZones.",
+      "Type" : "List<AWS::EC2::Subnet::Id>"
+    },
+    "VpcId" : {
+      "Description" : "VPC associated with the provided subnets",
+      "Type" : "AWS::EC2::VPC::Id"
+    },
+    "AvailabilityZones": {
+      "Description" : "(Optional) If passed, only launch nodes in these AZs (e.g., 'us-east-1a,us-east-1b'). Must match the passed Subnets.",
+      "Type" : "CommaDelimitedList",
+      "Default" : ""
+    },
+    "StackCreationTimeout" : {
+      "Description" : "Timeout on initial stack creation",
+      "Type" : "String",
+      "Default": "PT10M"
+    }
+  },
+
+  "Conditions" : {
+    "EnableLogstashCondition" : { "Fn::Not" : [{ "Fn::Equals" : [{ "Ref" : "LogstashConfig" }, ""] }] },
+    "EnableConfigScript" : { "Fn::And" : [
+      { "Fn::Not" : [{ "Fn::Equals" : [{ "Ref" : "ConfigScriptS3Bucket" }, ""] }]},
+      { "Fn::Not" : [{ "Fn::Equals" : [{ "Ref" : "ConfigScriptS3Path" }, ""] }]}
+    ]},
+    "UseAllAvailabilityZones" : { "Fn::Equals" : [{ "Fn::Join" : ["", { "Ref" : "AvailabilityZones"} ]}, ""]}
+  },
+
+  "Resources" : {
+    "MasterRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "ec2.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/",
+        "Policies": [ {
+          "PolicyName": "root",
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [ {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": [
+                { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ConfigScriptS3Bucket" }, { "Ref" : "ConfigScriptS3Path" }]]}
+              ]
+            } ]
+          }
+        } ]
+      }
+    },
+
+    "MasterInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ {
+          "Ref": "MasterRole"
+        } ]
+      }
+    },
+
+    "ServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : {
+          "Fn::If" : [
+            "UseAllAvailabilityZones",
+            { "Fn::GetAZs": "AWS::Region" },
+            {"Ref" : "AvailabilityZones"}
+          ]
+        },
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : { "Ref" : "ClusterSize" },
+        "MaxSize" : { "Ref" : "ClusterSize" },
+        "DesiredCapacity" : { "Ref" : "ClusterSize" },
+        "LoadBalancerNames" : [ { "Ref" : "PublicElb" }, { "Ref" : "PrivateElb" } ],
+        "VPCZoneIdentifier" : { "Ref" : "Subnets" },
+        "Tags" : [
+          {
+            "Key" : "role",
+            "Value" : "mesos-master",
+            "PropagateAtLaunch" : "true"
+          }
+        ]
+      },
+      "CreationPolicy" : {
+        "ResourceSignal" : {
+          "Timeout" : { "Ref" : "StackCreationTimeout" }
+        }
+      }
+    },
+
+    "LaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata" : {
+        "AWS::CloudFormation::Init" : {
+          "config": {
+            "packages" : {
+              "python": {
+                "awscli": []
+              }
+            },
+            "files" : {
+              "/usr/local/bin/zk-list-nodes" : {
+                "content" : { "Fn::Join" : ["", [
+                  "#!/bin/bash -e\n",
+                  "curl -s {{zk_discovery_url}} | python -c '",
+                    "import sys, json;",
+                    "j=json.load(sys.stdin);",
+                    "servers=[\":\".join([s, str(j[\"port\"])]) for s in j[\"servers\"]];",
+                    "print \",\".join(servers)'"
+                ]]},
+                "context" : {
+                  "zk_discovery_url"  : { "Ref" : "ExhibitorDiscoveryUrl" }
+                },
+                "mode"    : "000755",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/usr/local/bin/configure-mesos-master" : {
+                "content" : { "Fn::Join" : ["\n", [
+                  "#!/bin/bash -e",
+                  "echo \"zk://`/usr/local/bin/zk-list-nodes`/{{mesos_cluster_id}}\" > /etc/sv/mesos-master/env/MESOS_ZK",
+                  "echo \"`/usr/bin/ec2metadata --public-hostname`\" > /etc/sv/mesos-master/env/MESOS_HOSTNAME",
+                  "echo \"{{mesos_quorum}}\" > /etc/sv/mesos-master/env/MESOS_QUORUM"
+                ]]},
+                "context" : {
+                  "mesos_cluster_id": { "Ref": "ClusterId" },
+                  "mesos_quorum": { "Ref": "QuorumSize" }
+                },
+                "mode"    : "000755",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cron.d/mesos": {
+                "content" : { "Fn::Join" : ["\n", [
+                  "# Refresh mesos config every minute, but don't restart",
+                  "* * * * * root /usr/local/bin/configure-mesos-master",
+                  ""
+                ]]},
+                "mode"    : "000644",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/root/.dockercfg": {
+                "content" : { "Ref" : "DockerCredentials" },
+                "mode"    : "000644",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/default/docker": {
+                "content" : "DOCKER_OPTS=\"-g $(readlink -f /var/lib/docker)\"\n",
+                "mode"    : "000644",
+                "owner"   : "root",
+                "group"   : "root"
+              }
+            }
+          }
+        }
+      },
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : { "Ref" : "InstanceAmi" },
+        "SecurityGroups" : [ { "Ref" : "MasterSecurityGroup" }, { "Ref" : "ZkClientSecurityGroup" }, { "Ref" : "AdminSecurityGroup" } ],
+        "AssociatePublicIpAddress" : "true",
+        "IamInstanceProfile" : { "Ref" : "MasterInstanceProfile" },
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -ex\n",
+
+          "# Helper function\n",
+          "function error_exit\n",
+          "{\n",
+          "  cfn-signal -e 1 -r \"$1\" ",
+              " --resource ServerGroup",
+              " --stack ", { "Ref" : "AWS::StackName" },
+              " --region ", { "Ref" : "AWS::Region" }, "\n",
+          "  exit 1\n",
+          "}\n",
+
+          "# Process CloudFormation init definitions\n",
+          "cfn-init -s ", { "Ref" : "AWS::StackName" }, " -r LaunchConfig ",
+          "    --region ", { "Ref" : "AWS::Region" }, " || error_exit 'Failed to run cfn-init'\n",
+
+          "# Move docker dir to bigger device\n",
+          "service docker stop\n",
+          "mv /var/lib/docker /mnt/docker\n",
+          "ln -s /mnt/docker /var/lib/docker\n",
+          "service docker start\n",
+
+          { "Fn::If" : [
+            "EnableLogstashCondition",
+            { "Fn::Join" : ["", [
+              "echo '", { "Ref" : "LogstashConfig" },"' > /opt/logstash/logstash.conf\n",
+              "runit-service create logstash '/opt/logstash/bin/logstash -f /opt/logstash/logstash.conf'\n",
+              "echo '/root' > /etc/sv/logstash/HOME\n",
+              "runit-service enable logstash\n"
+            ]]},
+            ""
+          ]},
+
+          "# Configure, enable, and start mesos-master\n",
+          "configure-mesos-master\n",
+          "runit-service enable mesos-master\n",
+
+          "# Set up and start Marathon \n",
+          "export HOME=/root/  # so Docker can find ~/.dockercfg\n",
+          "docker pull ", { "Ref": "MarathonDockerImage" }, "\n",
+          "runit-service create marathon 'docker -r=false run ",
+          "   --net=host",
+          "   -p 8080:8080",
+          "   ", { "Ref": "MarathonDockerImage" },
+          "     --master zk://`zk-list-nodes`/", { "Ref": "ClusterId" },
+          "     --zk zk://`zk-list-nodes`/", { "Ref": "ClusterId" }, "_marathon",
+          "     --event_subscriber http_callback",
+          "     --ha",
+          "     --hostname `ec2metadata --public-hostname`'\n",
+
+          "runit-service enable marathon\n",
+
+          { "Fn::If" : [
+            "EnableConfigScript",
+            { "Fn::Join" : ["", [
+              "# Download and run the user-provided config script \n",
+              "aws --region ", { "Ref" : "AWS::Region" },
+              "  s3 cp s3://", { "Ref" : "ConfigScriptS3Bucket" }, { "Ref" : "ConfigScriptS3Path" }, " /tmp/cfn-user-config\n",
+              "chmod +x /tmp/cfn-user-config\n",
+              "/tmp/cfn-user-config || error_exit \n"
+            ]]},
+            ""
+          ]},
+
+          "# All is well so signal success\n",
+          "cfn-signal -e 0 -r \"Stack setup complete\" ",
+              " --resource ServerGroup",
+              " --stack ", { "Ref" : "AWS::StackName" },
+              " --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "#EOF"
+        ]]}}
+      }
+    },
+
+    "MasterSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Mesos Masters",
+        "VpcId" : { "Ref" : "VpcId" },
+        "SecurityGroupIngress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "5050", "ToPort" : "5050", "SourceSecurityGroupId" : { "Ref" : "LbSecurityGroup"} },
+          { "IpProtocol" : "tcp", "FromPort" : "8080", "ToPort" : "8080", "SourceSecurityGroupId" : { "Ref" : "LbSecurityGroup"} }
+        ]
+      }
+    },
+
+    "MasterToMasterIngress" : {
+      "Type" : "AWS::EC2::SecurityGroupIngress",
+      "Properties" : {
+        "GroupId" : { "Ref" : "MasterSecurityGroup" },
+        "IpProtocol" : "tcp",
+        "FromPort" : "5050",
+        "ToPort" : "5050",
+        "SourceSecurityGroupId" : { "Ref" : "MasterSecurityGroup" }
+      }
+    },
+
+    "MarathonToMarathonIngress" : {
+      "Type" : "AWS::EC2::SecurityGroupIngress",
+      "Properties" : {
+        "GroupId" : { "Ref" : "MasterSecurityGroup" },
+        "IpProtocol" : "tcp",
+        "FromPort" : "8080",
+        "ToPort" : "8080",
+        "SourceSecurityGroupId" : { "Ref" : "MasterSecurityGroup" }
+      }
+    },
+
+    "LbSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Mesos Master LB",
+        "VpcId" : { "Ref" : "VpcId" }
+      }
+    },
+
+    "PublicElb" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "SecurityGroups": [{ "Ref": "LbSecurityGroup" }, { "Ref" : "AdminSecurityGroup" }],
+        "Subnets": { "Ref": "Subnets" },
+        "Listeners" : [
+          {
+            "LoadBalancerPort" : "5050",
+            "Protocol" : "HTTP",
+            "InstancePort" : "5050",
+            "InstanceProtocol" : "HTTP"
+          },
+          {
+            "LoadBalancerPort" : "8080",
+            "Protocol" : "HTTP",
+            "InstancePort" : "8080",
+            "InstanceProtocol" : "HTTP"
+          }
+        ],
+        "HealthCheck" : {
+          "Target" : "HTTP:5050/health",
+          "HealthyThreshold" : "2",
+          "UnhealthyThreshold" : "2",
+          "Interval" : "30",
+          "Timeout" : "5"
+        }
+      }
+    },
+
+    "PrivateElb" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "Scheme" : "internal",
+        "SecurityGroups": [{ "Ref": "LbSecurityGroup" }, { "Ref" : "AdminSecurityGroup" }, { "Ref" : "MasterSecurityGroup" }],
+        "Subnets": { "Ref": "Subnets" },
+        "Listeners" : [
+          {
+            "LoadBalancerPort" : "5050",
+            "Protocol" : "HTTP",
+            "InstancePort" : "5050",
+            "InstanceProtocol" : "HTTP"
+          },
+          {
+            "LoadBalancerPort" : "8080",
+            "Protocol" : "HTTP",
+            "InstancePort" : "8080",
+            "InstanceProtocol" : "HTTP"
+          }
+        ],
+        "HealthCheck" : {
+          "Target" : "HTTP:5050/health",
+          "HealthyThreshold" : "2",
+          "UnhealthyThreshold" : "2",
+          "Interval" : "30",
+          "Timeout" : "5"
+        }
+      }
+    }
+
+  },
+
+  "Outputs" : {
+    "MesosMasterSecurityGroup" : {
+      "Value" : { "Ref" : "MasterSecurityGroup" }
+    },
+    "PublicElbAddress" : {
+      "Description" : "Mesos Master public ELB",
+      "Value" : { "Fn::GetAtt" : [ "PublicElb", "DNSName" ]}
+    },
+    "PrivateElbAddress" : {
+      "Description" : "Mesos Master private ELB",
+      "Value" : { "Fn::GetAtt" : [ "PrivateElb", "DNSName" ]}
+    }
+  }
+}
