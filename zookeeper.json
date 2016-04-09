@@ -273,7 +273,7 @@
           "   -e 'AWS_ACCESS_KEY_ID=", { "Ref" : "HostKeys" }, "'",
           "   -e 'AWS_SECRET_ACCESS_KEY=", {"Fn::GetAtt": ["HostKeys", "SecretAccessKey"]}, "'",
           "   -e 'AWS_REGION=", { "Ref" : "S3Region" }, "'",
-          "   -e \"HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/hostname)\"",
+          "   -e \"HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)\"",
           "   ", { "Ref": "DockerImage" }, "\n",
           "runit-service enable zk\n",
 
