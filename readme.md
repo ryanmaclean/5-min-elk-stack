@@ -103,9 +103,11 @@ gem install io-console cfer
 ```
 cfer tail --region us-west-2 new2
 
-## Set Up Mesos Cloudformation
+## Set Up Mesos Cloudformation Stack
 
 ```
 aws cloudformation create-stack --capabilities CAPABILITY_IAM --stack-name mesos --template-body file:///home/ec2-user/5-minute-belk-stack/mesos.json &&  watch aws cloudformation describe-stack-events --stack-name mesos
 ```
 
+## Delete the Mesos Stack
+aws cloudformation delete-stack --stack-name mesos && watch aws cloudformation describe-stack-events --stack-name mesos
