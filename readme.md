@@ -21,7 +21,10 @@ watch aws cloudformation describe-stack-events --stack-name FIVEMINELKZOO
 If you so desire, you can SSH to one of the hosts from your node to check things out:
 
 ```
-ssh -o "StrictHostKeyChecking no" -i ~/.ssh/YOURFANCY.pem ubuntu@$(aws ec2 describe-instances | grep PrivateIpAddress | cut -d ':' -f 2 | head -1 | tr -d "\," | tr -d "\"" | cut -c 2-)
+ssh -o "StrictHostKeyChecking no" \\
+-i ~/.ssh/YOURFANCY.pem ubuntu@$(aws ec2 describe-instances | \\
+grep PrivateIpAddress | cut -d ':' -f 2 | \\
+head -1 | tr -d "\," | tr -d "\"" | cut -c 2-)
 ```
 
 Follow that up by adding `mesos-master.json` and `mesos-slave.json` into your Cloudformation S3 bucket. Take note of the location of both of these as you'll need the for the next step. 
