@@ -1,0 +1,372 @@
+
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "Launches an Exhibitor-managed ZooKeeper cluster",
+
+  "Parameters" : {
+    "InstanceType" : {
+      "Description" : "EC2 instance type",
+      "Type" : "String",
+      "Default" : "t2.micro",
+      "AllowedValues" : [
+        "t2.micro", "t2.small", "t2.medium",
+        "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge",
+        "c4.large", "c4.xlarge", "c4.2xlarge", "c4.4xlarge", "c4.8xlarge",
+        "c3.large", "c3.xlarge", "c3.2xlarge", "c3.4xlarge", "c3.8xlarge",
+        "r3.large", "r3.xlarge", "r3.2xlarge", "r3.4xlarge", "r3.8xlarge",
+        "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge",
+        "hs1.8xlarge", "g2.2xlarge"
+      ],
+      "ConstraintDescription" : "must be a valid, HVM-compatible EC2 instance type."
+    },
+    "Password" : {
+      "Type" : "String",
+      "Description" : "S3 Bucket IAM login password, this should conform to a reasonable password policy - one uppercase, some lowercase, special characters and at least 8 characters in length",
+      "NoEcho" : "true",
+      "MinLength" : "3",
+      "MaxLength" : "50",
+      "Default" : "Password1!"
+    },
+    "KeyName" : {
+      "Description" : "Existing EC2 KeyPair to be associated with all cluster instances for SSH access. For default AMIs, log in as the 'ubuntu' user.",
+      "Type" : "AWS::EC2::KeyPair::KeyName",
+      "Default" : "5minelk"
+    },
+    "ClusterSize" : {
+      "Description" : "Number of nodes to launch",
+      "Type" : "Number",
+      "Default": "3"
+    },
+    "DockerImage" : {
+      "Description" : "Path of the ZK+Exhibitor Docker image (format: '[<registry>[:<port>]/]<repository>:<version>')",
+      "Type" : "String",
+      "Default" : "mbabineau/zookeeper-exhibitor:3.4.6_1.5.4"
+    },
+    "Subnets" : {
+      "Description" : "List of VPC subnet IDs for the cluster. Note: must match up with the passed AvailabilityZones.",
+      "Type" : "List<AWS::EC2::Subnet::Id>",
+      "Default" : "subnet-a91a18f0"
+    },
+    "VpcId" : {
+      "Description" : "VPC associated with the provided subnets",
+      "Type" : "AWS::EC2::VPC::Id",
+      "Default" : "vpc-3f5b8e5b"
+    },
+    "AdminSecurityGroup" : {
+      "Description" : "Existing security group that should be granted administrative access to ZooKeeper (e.g., 'sg-123456')",
+      "Type" : "AWS::EC2::SecurityGroup::Id",
+      "Default" : "sg-90ffb6f7"
+    },
+    "AvailabilityZones": {
+      "Description" : "(Optional) If passed, only launch nodes in these AZs (e.g., 'us-east-1a,us-east-1b'). Note: these must match up with the passed Subnets.",
+      "Type" : "CommaDelimitedList",
+      "Default" : ""
+    },
+    "S3Region" : {
+      "Description" : "Region for Exhibitor backups of ZK configs",
+      "Type" : "String",
+      "AllowedValues" : ["eu-central-1","sa-east-1","ap-northeast-1","eu-west-1","us-east-1","us-west-1","us-west-2","ap-southeast-2","ap-southeast-1"],
+      "Default" : "us-west-2"
+    },
+    "S3BucketName" : {
+      "Type" : "String",
+      "Description" : "S3 Bucket Name, please use lowercase and hyphens",
+      "Default" : "5minelk-zk"
+    },
+    "S3BucketDescription" : {
+      "Type" : "String",
+      "Description" : "This text will be added to the Name tag on the bucket",
+      "Default" : "Zookeeper Bucket for 5 Minute ELK"
+    },
+    "S3BucketEnvironment" : {
+      "Type" : "String",
+      "Description" : "This text will be added to the Environment tag on the bucket and used a prefix within the bucket",
+      "AllowedValues" : ["Prd", "Pre", "Stg", "Tst", "Dev"],
+      "Default" : "Dev"
+    }
+  },
+
+  "Mappings" : {
+    "RegionMap" : {
+      "ap-northeast-1" : {
+        "AMI" : "ami-d88491b6"
+      },
+      "ap-southeast-1" : {
+        "AMI" : "ami-24965c47"
+      },
+      "ap-southeast-2" : {
+        "AMI" : "ami-d2b898b1"
+      },
+      "eu-central-1" : {
+        "AMI" : "ami-efe00680"
+      },
+      "eu-west-1" : {
+        "AMI" : "ami-eb018598"
+      },
+      "sa-east-1" : {
+        "AMI" : "ami-26b9354a"
+      },
+      "us-east-1" : {
+        "AMI" : "ami-c45b54ae"
+      },
+      "us-west-1" : {
+        "AMI" : "ami-1dc2b07d"
+      },
+      "us-west-2" : {
+        "AMI" : "ami-0eea016e"
+      }
+    }
+  },
+
+  "Conditions" : {
+    "UseAllAvailabilityZones" : {"Fn::Equals" : [{ "Fn::Join" : ["", {"Ref" : "AvailabilityZones"} ]}, ""]}
+  },
+
+  "Resources" : {
+    "IAMUser" : {
+      "Type" : "AWS::IAM::User",
+      "Properties" : {
+        "Policies" : [{
+          "PolicyName" : "S3Access",
+          "PolicyDocument" : {
+            "Statement": [{
+              "Effect"   : "Allow",
+              "Action"   : "s3:*",
+              "Resource" : { "Fn::Join" : ["", ["arn:aws:s3:::", {"Ref" : "S3BucketName"} , "/*"]]}
+            }]
+          }
+        },
+        {
+          "PolicyName" : "IAMAccess",
+          "PolicyDocument" : {
+            "Statement" : [{
+              "Effect"    : "Allow",
+              "NotAction" : "iam:*",
+              "Resource"  : "*"
+            }]
+          }
+        }]
+      }
+    },
+     "S3Bucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "BucketName" : {"Ref" : "S3BucketName"}
+      }
+    },
+
+    "BucketPolicy" : {
+      "Type" : "AWS::S3::BucketPolicy",
+      "Properties" : {
+        "PolicyDocument": {
+          "Id"           : "Give all access to ZK server",
+          "Statement"    : [{
+            "Sid"        : "AllAccess",
+            "Action"     : ["s3:*"],
+            "Effect"     : "Allow",
+            "Resource"   : { "Fn::Join" : ["", ["arn:aws:s3:::", {"Ref" : "S3Bucket"} ]]},
+            "Principal"  : { "AWS": {"Fn::GetAtt" : ["S3User", "Arn"]} }
+          }]
+        },
+        "Bucket" : {"Ref" : "S3Bucket"}
+      }
+    },
+
+    "S3User" : {
+      "Type" : "AWS::IAM::User",
+      "Properties" : {
+        "LoginProfile": {
+          "Password": { "Ref" : "Password" }
+        },
+        "Policies" : [{
+          "PolicyName" : "S3Access",
+          "PolicyDocument" : {
+            "Statement": [{
+              "Effect"   : "Allow",
+              "Action"   : "s3:ListAllMyBuckets",
+              "Resource" : "*"
+            },{
+              "Effect"   : "Allow",
+              "Action"   : "s3:*",
+              "Resource" : { "Fn::Join" : ["", ["arn:aws:s3:::", {"Ref" : "S3Bucket"} , "/*"]]}
+            }]
+          }
+        }]
+      }
+    },
+    "HostKeys" : {
+      "Type" : "AWS::IAM::AccessKey",
+      "Properties" : {
+        "UserName" : {"Ref": "IAMUser"}
+      }
+    },
+
+    "ServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : {
+          "Fn::If" : [
+            "UseAllAvailabilityZones",
+            { "Fn::GetAZs": "AWS::Region" },
+            { "Ref" : "AvailabilityZones" }
+          ]
+        },
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : "1",
+        "MaxSize" : "9",
+        "DesiredCapacity" : { "Ref" : "ClusterSize" },
+        "LoadBalancerNames" : [ { "Ref" : "ElasticLoadBalancer" } ],
+        "VPCZoneIdentifier" : { "Ref" : "Subnets" },
+        "Tags" : [
+          {
+            "Key" : "role",
+            "Value" : "zookeeper",
+            "PropagateAtLaunch" : "true"
+          }
+        ]
+      }
+    },
+
+    "LaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI"] },
+        "SecurityGroups" : [ { "Ref" : "ServerSecurityGroup" }, { "Ref" : "AdminSecurityGroup" }  ],
+        "AssociatePublicIpAddress": "true",
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -ex\n",
+
+          "# Helper function\n",
+          "function error_exit\n",
+          "{\n",
+          "  cfn-signal -e 1 -r \"$1\" '", { "Ref" : "WaitHandle" }, "'\n",
+          "  exit 1\n",
+          "}\n",
+
+          "#Update Hosts File\n",
+          "echo '127.0.0.1' `ec2metadata | grep local-hostname | cut -d ' ' -f2` | sudo tee --append /etc/hosts\n",
+
+          "#Install Docker\n",
+          "sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D\n"
+          "echo 'deb https://apt.dockerproject.org/repo ubuntu-wily main' | sudo tee /etc/apt/sources.list.d/docker.list\n"
+          "sudo apt-get update\n",
+          "sudo apt-get install -y linux-image-extra-$(uname -r)\n"
+          "sudo apt-get install -y docker-engine\n"
+          "sudo service docker start\n"
+
+          "#Fix Docker Sudo\n"
+          "sudo usermod -aG docker ubuntu\n"
+
+          
+          "# Set up and start the Exhibitor+ZooKeeper service\n",
+          "sudo docker pull ", { "Ref": "DockerImage" }, "\n",
+          "runit-service create zk docker run ",
+          "   -p 8181:8181 -p 2181:2181 -p 2888:2888 -p 3888:3888",
+          "   -e 'S3_BUCKET=", { "Ref" : "S3BucketName" }, "'",
+          "   -e 'S3_PREFIX=", { "Ref" : "S3BucketEnvironment" }, "'",
+          "   -e 'AWS_ACCESS_KEY_ID=", { "Ref" : "HostKeys" }, "'",
+          "   -e 'AWS_SECRET_ACCESS_KEY=", {"Fn::GetAtt": ["HostKeys", "SecretAccessKey"]}, "'",
+          "   -e 'AWS_REGION=", { "Ref" : "S3Region" }, "'",
+          "   -e \"HOSTNAME=`ec2metadata --public-hostname`\"",
+          "   ", { "Ref": "DockerImage" }, "\n",
+          "runit-service enable zk\n",
+
+          "# All is well so signal success\n",
+          "cfn-signal -e 0 -r \"Stack setup complete\" '", { "Ref" : "WaitHandle" }, "'\n",
+
+          "#EOF"
+        ]]}}
+      }
+    },
+
+    "ClientSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "For ZooKeeper clients. Grants access to the associated ZooKeeper cluster.",
+        "VpcId" : { "Ref" : "VpcId" }
+      }
+    },
+
+    "ServerSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable SSH and Exhibitor access",
+        "VpcId" : { "Ref" : "VpcId" },
+        "SecurityGroupIngress" :
+          [ { "IpProtocol" : "tcp", "FromPort" : "8181", "ToPort" : "8181", "SourceSecurityGroupId" : { "Ref" : "LbSecurityGroup"} },
+            { "IpProtocol" : "tcp", "FromPort" : "2181", "ToPort" : "2181", "SourceSecurityGroupId" : { "Ref" : "ClientSecurityGroup"} },
+            { "IpProtocol" : "tcp", "FromPort" : "2888", "ToPort" : "2888", "SourceSecurityGroupId" : { "Ref" : "ClientSecurityGroup"} },
+            { "IpProtocol" : "tcp", "FromPort" : "3888", "ToPort" : "3888", "SourceSecurityGroupId" : { "Ref" : "ClientSecurityGroup"} } ]
+      }
+    },
+
+    "SecurityGroupIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "-1",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "SourceSecurityGroupId": { "Ref": "ServerSecurityGroup" }
+      }
+    },
+
+    "LbSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable Exhibitor access",
+        "VpcId" : { "Ref" : "VpcId" },
+        "SecurityGroupIngress" :
+          [ { "IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "SourceSecurityGroupId" : { "Ref" : "ClientSecurityGroup"} } ]
+      }
+    },
+
+    "ElasticLoadBalancer" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "CrossZone": "true",
+        "Scheme": "internal",
+        "SecurityGroups": [{ "Ref": "LbSecurityGroup" }, { "Ref": "AdminSecurityGroup" }],
+        "Subnets": { "Ref": "Subnets" },
+        "Listeners" : [ {
+          "LoadBalancerPort" : "80",
+          "InstancePort" : "8181",
+          "Protocol" : "HTTP"
+        } ],
+        "HealthCheck" : {
+          "Target" : "HTTP:8181/exhibitor/v1/cluster/state",
+          "HealthyThreshold" : "3",
+          "UnhealthyThreshold" : "5",
+          "Interval" : "30",
+          "Timeout" : "5"
+        }
+      }
+    },
+
+    "WaitHandle" : {
+      "Type" : "AWS::CloudFormation::WaitConditionHandle"
+    }
+  },
+
+  "Outputs" : {
+    "ExhibitorDiscoveryUrl" : {
+      "Value" : { "Fn::Join" : ["", [
+        "http://", { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]}, "/exhibitor/v1/cluster/list"
+      ]]}
+    },
+    "ClientSecurityGroup" : {
+      "Value" : { "Ref" : "ClientSecurityGroup" }
+    },
+    "IAMUser" : {
+      "Value" : { "Ref" : "S3User" },
+      "Description" : "IAM User for customer"
+    },
+    "BucketName" : {
+      "Value" : { "Ref" : "S3Bucket" },
+      "Description" : "Name of newly created customer S3 bucket"
+    }
+  }
+}
