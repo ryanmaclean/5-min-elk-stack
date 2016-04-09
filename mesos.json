@@ -179,29 +179,32 @@
 
   "Mappings" : {
     "RegionMap" : {
-      "us-east-1" : {
-        "AMI" : "ami-0a878262"
-      },
-      "us-west-1" : {
-        "AMI" : "ami-494eac0d"
-      },
-      "us-west-2" : {
-        "AMI" : "ami-734a7f43"
-      },
-      "eu-west-1" : {
-        "AMI" : "ami-99fc9cee"
+      "ap-northeast-1" : {
+        "AMI" : "ami-d88491b6"
       },
       "ap-southeast-1" : {
-        "AMI" : "ami-50467b02"
+        "AMI" : "ami-24965c47"
       },
       "ap-southeast-2" : {
-        "AMI" : "ami-79542943"
+        "AMI" : "ami-d2b898b1"
       },
-      "ap-northeast-1" : {
-        "AMI" : "ami-f26ca9f2"
+      "eu-central-1" : {
+        "AMI" : "ami-efe00680"
+      },
+      "eu-west-1" : {
+        "AMI" : "ami-eb018598"
       },
       "sa-east-1" : {
-        "AMI" : "ami-3944c124"
+        "AMI" : "ami-26b9354a"
+      },
+      "us-east-1" : {
+        "AMI" : "ami-c45b54ae"
+      },
+      "us-west-1" : {
+        "AMI" : "ami-1dc2b07d"
+      },
+      "us-west-2" : {
+        "AMI" : "ami-0eea016e"
       }
     }
   },
