@@ -246,7 +246,7 @@
           "}\n",
 
           "#Update Hosts File\n",
-          "curl http://169.254.169.254/latest/meta-data/local-hostname | sudo tee --append /etc/hosts\n",
+          "echo '127.0.0.1' `ec2metadata | grep local-hostname | cut -d ' ' -f2` | sudo tee --append /etc/hosts\n",
 
           "#Install Docker\n",
           "sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D\n",
