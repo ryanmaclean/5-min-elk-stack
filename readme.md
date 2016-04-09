@@ -12,7 +12,10 @@ Start by creating a VPC with internet gateway, one subnet (with 0.0.0.0/0 route 
 Next, create the first stack using the `zookeeper.json` file:
 
 ```
-aws cloudformation create-stack --capabilities CAPABILITY_IAM --stack-name FIVEMINELKZOO --template-body file:///home/ec2-user/5-minute-belk-stack/zookeeper.json && watch aws cloudformation describe-stack-events --stack-name
+aws cloudformation create-stack --capabilities CAPABILITY_IAM \\
+--stack-name FIVEMINELKZOO \\
+--template-body file:///home/ec2-user/5-minute-belk-stack/zookeeper.json && \\
+watch aws cloudformation describe-stack-events --stack-name
 ```
 
 Follow that up by adding `mesos-master.json` and `mesos-slave.json` into your Cloudformation S3 bucket. Take note of the location of both of these as you'll need the for the next step. 
