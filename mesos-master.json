@@ -286,11 +286,16 @@
           "cfn-init -s ", { "Ref" : "AWS::StackName" }, " -r LaunchConfig ",
           "    --region ", { "Ref" : "AWS::Region" }, " || error_exit 'Failed to run cfn-init'\n",
 
-          "# Move docker dir to bigger device\n",
-          "service docker stop\n",
-          "mv /var/lib/docker /mnt/docker\n",
-          "ln -s /mnt/docker /var/lib/docker\n",
-          "service docker start\n",
+          "#Install Docker\n",
+          "sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D\n",
+          "echo deb https://apt.dockerproject.org/repo ubuntu-wily main | sudo tee /etc/apt/sources.list.d/docker.list\n",
+          "sudo apt-get update\n",
+          "sudo apt-get install -y docker-engine runit heat-cfntools\n",
+          "sudo service docker start\n",
+
+          "#Install Runit-Service\n",
+          "sudo curl -o /usr/local/bin/runit-service https://raw.githubusercontent.com/pmbauer/dotfiles/master/bin/runit-service\n",
+          "sudo chmod +x /usr/local/bin/runit-service\n",
 
           { "Fn::If" : [
             "EnableLogstashCondition",
