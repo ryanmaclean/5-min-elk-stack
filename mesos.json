@@ -39,12 +39,12 @@
     "ZkClientSecurityGroup" : {
       "Description" : "Existing security group that should be used by ZooKeeper clients to access ZooKeeper",
       "Type" : "String",
-      "Default" : "sg-9ffeb7f8"
+      "Default" : "sg-696e250e"
     },
     "ExhibitorDiscoveryUrl" : {
       "Description" : "Exhibitor URL that returns active ZooKeeper nodes ('getCluster') (e.g., http://<exhibitor_node>/exhibitor/v1/cluster/list)",
       "Type" : "String",
-      "Default" : "http://internal-fiveminel-ElasticL-IKNT0HBR928E-1307916992.us-west-2.elb.amazonaws.com/exhibitor/v1/cluster/list"
+      "Default" : "http://internal-new2-ElasticLoadBa-1F6AOWYYJ9N0R-1454100792.us-west-2.elb.amazonaws.com/exhibitor/v1/cluster/list"
     },
 
     "MasterInstanceAmi" : {
