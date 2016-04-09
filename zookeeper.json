@@ -258,6 +258,9 @@
           "#Fix Docker Sudo\n",
           "sudo usermod -aG docker ubuntu\n",
 
+          "#Fix MOTD Warning\n",
+          "sudo touch /var/lib/cloud/instance/locale-check.skip\n",
+
           
           "# Set up and start the Exhibitor+ZooKeeper service\n",
           "sudo curl -o /usr/local/bin/runit-service https://raw.githubusercontent.com/pmbauer/dotfiles/master/bin/runit-service\n",
