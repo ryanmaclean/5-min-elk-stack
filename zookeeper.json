@@ -88,29 +88,32 @@
 
   "Mappings" : {
     "RegionMap" : {
-      "us-east-1" : {
-        "AMI" : "ami-96163afe"
-      },
-      "us-west-1" : {
-        "AMI" : "ami-117c9a55"
-      },
-      "us-west-2" : {
-        "AMI" : "ami-8d123ebd"
-      },
-      "eu-west-1" : {
-        "AMI" : "ami-8be47afc"
+      "ap-northeast-1" : {
+        "AMI" : "ami-d88491b6"
       },
       "ap-southeast-1" : {
-        "AMI" : "ami-64b88936"
+        "AMI" : "ami-24965c47"
       },
       "ap-southeast-2" : {
-        "AMI" : "ami-abf48491"
+        "AMI" : "ami-d2b898b1"
       },
-      "ap-northeast-1" : {
-        "AMI" : "ami-3d62953d"
+      "eu-central-1" : {
+        "AMI" : "ami-efe00680"
+      },
+      "eu-west-1" : {
+        "AMI" : "ami-eb018598"
       },
       "sa-east-1" : {
-        "AMI" : "ami-db1fa7c6"
+        "AMI" : "ami-26b9354a"
+      },
+      "us-east-1" : {
+        "AMI" : "ami-c45b54ae"
+      },
+      "us-west-1" : {
+        "AMI" : "ami-1dc2b07d"
+      },
+      "us-west-2" : {
+        "AMI" : "ami-0eea016e"
       }
     }
   },
@@ -249,7 +252,7 @@
           "sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D\n",
           "echo deb https://apt.dockerproject.org/repo ubuntu-wily main | sudo tee /etc/apt/sources.list.d/docker.list\n",
           "sudo apt-get update\n",
-          "sudo apt-get install -y docker-engine\n",
+          "sudo apt-get install -y docker-engine runit\n",
           "sudo service docker start\n",
 
           "#Fix Docker Sudo\n",
@@ -257,6 +260,8 @@
 
           
           "# Set up and start the Exhibitor+ZooKeeper service\n",
+          "sudo curl -o /usr/local/bin/runit-service https://raw.githubusercontent.com/pmbauer/dotfiles/master/bin/runit-service\n",
+          "sudo chmod +x /usr/local/bin/runit-service\n",
           "sudo docker pull ", { "Ref": "DockerImage" }, "\n",
           "runit-service create zk docker run ",
           "   -p 8181:8181 -p 2181:2181 -p 2888:2888 -p 3888:3888",
@@ -269,7 +274,7 @@
           "   ", { "Ref": "DockerImage" }, "\n",
           "runit-service enable zk\n",
 
-          "# All is well so signal success\n",
+          "# WE ARE BLINDLY ASSUMING All is well and signaling success...\n",
           "cfn-signal -e 0 -r \"Stack setup complete\" '", { "Ref" : "WaitHandle" }, "'\n",
 
           "#EOF"
