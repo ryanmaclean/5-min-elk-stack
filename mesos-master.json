@@ -286,14 +286,14 @@
           "cfn-init -s ", { "Ref" : "AWS::StackName" }, " -r LaunchConfig ",
           "    --region ", { "Ref" : "AWS::Region" }, " || error_exit 'Failed to run cfn-init'\n",
 
-          "#Install Docker\n",
+          "# Install Docker\n",
           "sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D\n",
           "echo deb https://apt.dockerproject.org/repo ubuntu-wily main | sudo tee /etc/apt/sources.list.d/docker.list\n",
           "sudo apt-get update\n",
-          "sudo apt-get install -y docker-engine runit heat-cfntools\n",
+          "sudo apt-get install -y docker-engine runit heat-cfntools tar wget git openjdk-8-jdk build-essential python-dev python-boto libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev\n",
           "sudo service docker start\n",
 
-          "#Install Runit-Service\n",
+          "# Install Runit-Service\n",
           "sudo curl -o /usr/local/bin/runit-service https://raw.githubusercontent.com/pmbauer/dotfiles/master/bin/runit-service\n",
           "sudo chmod +x /usr/local/bin/runit-service\n",
 
@@ -308,7 +308,16 @@
             ""
           ]},
 
-          "# Configure, enable, and start mesos-master\n",
+          "# Install, nonfigure, enable, and start mesos-master\n",
+          "wget http://www.apache.org/dist/mesos/0.28.0/mesos-0.28.0.tar.gz\n",
+          "tar -zxf mesos-0.28.0.tar.gz\n",
+          "cd mesos\n",
+          "./bootstrap\n",
+          "mkdir build\n",
+          "cd build\n",
+          "../configure\n",
+          "make\n",
+          "cd ~\n",
           "configure-mesos-master\n",
           "runit-service enable mesos-master\n",
 
