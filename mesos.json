@@ -8,19 +8,22 @@
     "ClusterId" : {
       "Description" : "Mesos cluster ID",
       "Type" : "String",
-      "Default" : "mesos"
+      "Default" : "fiveminelkmesos"
     },
     "KeyName" : {
       "Description" : "Existing EC2 KeyPair to be associated with all cluster instances for SSH access. For default AMIs, log in as the 'ubuntu' user.",
-      "Type" : "String"
+      "Type" : "AWS::EC2::KeyPair::KeyName",
+      "Default" : "5minelk"
     },
     "Subnets" : {
       "Description" : "List of VPC subnet IDs in which to launch the cluster. Must match the passed AvailabilityZones.",
-      "Type" : "String"
+      "Type" : "String",
+      "Default" : "subnet-a91a18f0"
     },
     "VpcId" : {
       "Description" : "VPC associated with the provided subnets",
-      "Type" : "String"
+      "Type" : "String",
+      "Default" : "vpc-3f5b8e5b"
     },
     "AvailabilityZones": {
       "Description" : "(Optional) If passed, only launch nodes in these AZs (e.g., 'us-east-1a,us-east-1b'). Must match the passed Subnets.",
@@ -30,15 +33,18 @@
 
     "AdminSecurityGroup" : {
       "Description" : "Existing security group that should be granted administrative access to Mesos (e.g., 'sg-123456')",
-      "Type": "String"
+      "Type": "String",
+      "Default" : "sg-90ffb6f7"
     },
     "ZkClientSecurityGroup" : {
       "Description" : "Existing security group that should be used by ZooKeeper clients to access ZooKeeper",
-      "Type" : "String"
+      "Type" : "String",
+      "Default" : "sg-9ffeb7f8"
     },
     "ExhibitorDiscoveryUrl" : {
       "Description" : "Exhibitor URL that returns active ZooKeeper nodes ('getCluster') (e.g., http://<exhibitor_node>/exhibitor/v1/cluster/list)",
-      "Type" : "String"
+      "Type" : "String",
+      "Default" : "http://internal-fiveminel-ElasticL-IKNT0HBR928E-1307916992.us-west-2.elb.amazonaws.com/exhibitor/v1/cluster/list"
     },
 
     "MasterInstanceAmi" : {
@@ -156,11 +162,13 @@
 
     "MesosMasterTemplateUrl" : {
       "Description" : "URL of the Mesos Master CloudFormation template on S3 (must be \"https://s3.amazonaws.com/<bucket>/<key>\")",
-      "Type" : "String"
+      "Type" : "String",
+      "Default" : "https://s3-us-west-2.amazonaws.com/cf-templates-k7u92ie5gn4v-us-west-2/mesos-master.json"
     },
     "MesosSlaveTemplateUrl" : {
       "Description" : "URL of the Mesos Slave CloudFormation template on S3 (must be \"https://s3.amazonaws.com/<bucket>/<key>\")",
-      "Type" : "String"
+      "Type" : "String",
+      "Default" : "https://s3-us-west-2.amazonaws.com/cf-templates-k7u92ie5gn4v-us-west-2/mesos-slave.json"
     }
   },
 
