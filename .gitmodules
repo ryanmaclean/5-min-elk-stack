@@ -1,3 +1,6 @@
 [submodule "beats-dashboards"]
 	path = beats-dashboards
 	url = https://github.com/elastic/beats-dashboards.git
+[submodule "docker-elk"]
+	path = docker-elk
+	url = https://github.com/ryanmaclean/docker-elk.git
