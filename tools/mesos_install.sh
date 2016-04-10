@@ -20,7 +20,7 @@ mkdir build
 cd build
 ../configure
 make
-make install
+sudo make install
 
 # Return to Our Home
 cd ~
