@@ -9,6 +9,8 @@ A set of Cloudformation scripts that make it easy to stand up ElasticSearch, Log
 
 The platform consists of Docker containers running on Mesos AWS EC2 slaves scheduled by Marathon and Chronos. 
 
+Most of the original Cloudformation work and scripts were done by [Mike Babineau](https://github.com/mbabineau). I've forked and created PRs where applicable (just getting stuff up to date after the Docker Hub changes that droppeed support for 1.5).
+
 ## Setting Up Your Stack
 Start by creating a VPC with internet gateway, one subnet (with 0.0.0.0/0 route to IGW), EC2 key, and one seccurity group that allows 22 (or port of your choice), 2151 and 8181. 
 
