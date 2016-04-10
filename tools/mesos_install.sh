@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# You'll Probably Want About 4GB RAM To Build
+
 # Run an Update Before We Start
 sudo apt-get update
 
