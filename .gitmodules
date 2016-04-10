@@ -1,0 +1,3 @@
+[submodule "beats-dashboards"]
+	path = beats-dashboards
+	url = https://github.com/elastic/beats-dashboards.git
