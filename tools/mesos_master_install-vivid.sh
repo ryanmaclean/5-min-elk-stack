@@ -30,7 +30,7 @@ sudo cp /etc/marathon/conf/master /etc/marathon/conf/zk
 #sudo nano /etc/marathon/conf/zk
 
 # Ensure Only Master Processes Are Running
-sudo stop mesos-slave
+sudo service stop mesos-slave
 echo manual | sudo tee /etc/init/mesos-slave.override
 
 # Now Start the Party!
