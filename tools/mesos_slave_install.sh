@@ -37,9 +37,12 @@ sudo cp /etc/marathon/conf/master /etc/marathon/conf/zk
 # If more than one node, Edit the Following to include comma-separated list of ZK nodes:
 #sudo nano /etc/marathon/conf/zk
 
-# Ensure Only Master Processes Are Running
-sudo stop mesos-slave
-echo manual | sudo tee /etc/init/mesos-slave.override
+# Ensure Only Slave Processes Are Running
+sudo stop zookeeper
+echo manual | sudo tee /etc/init/zookeeper.override
+
+echo manual | sudo tee /etc/init/mesos-master.override
+sudo stop mesos-master
 
 # Now Start the Party!
 sudo service mesos-slave restart

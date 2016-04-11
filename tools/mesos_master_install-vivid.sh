@@ -38,4 +38,6 @@ sudo service zookeeper restart
 sudo service mesos-master restart
 sudo service marathon restart
 sudo service chronos restart
-echo http://`ec2metadata --public-hostname`:8080
+echo "Connect to Marathon here: http://"`ec2metadata --public-hostname`":8080"
+echo "Connect to Mesos here: http://"`ec2metadata --public-hostname`":5050"
+echo "Connect to Chronos here: http://"`ec2metadata --public-hostname`":4400"
