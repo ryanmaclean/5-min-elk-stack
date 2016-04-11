@@ -1,13 +1,14 @@
+#!/bin/bash
 # Install Mesos, Zookeeper, Chronos and Marathon
 
 # Add Key and Repository
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
-#DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
-#CODENAME=$(lsb_release -cs)
-#echo "deb http://repos.mesosphere.io/${DISTRO} ${CODENAME} main" | sudo tee /etc/apt/sources.list.d/mesosphere.list
+DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+CODENAME=$(lsb_release -cs)
+echo "deb http://repos.mesosphere.io/${DISTRO} ${CODENAME} main" | sudo tee /etc/apt/sources.list.d/mesosphere.list
 
 # Specific to Xenial Beta 2 (Let's Pretend!)
-echo "deb http://repos.mesosphere.io/ubuntu vivid main" | sudo tee /etc/apt/sources.list.d/mesosphere.list
+#echo "deb http://repos.mesosphere.io/ubuntu vivid main" | sudo tee /etc/apt/sources.list.d/mesosphere.list
 
 # For Older Systems, Install the Java 8 Runtime
 #sudo add-apt-repository ppa:webupd8team/java
@@ -19,8 +20,8 @@ echo "deb http://repos.mesosphere.io/ubuntu vivid main" | sudo tee /etc/apt/sour
 sudo apt-get -y update
 
 # On Masters, Install Zookeeper, Mesos, Chronos and Marathon
-
-sudo apt-get install -y mesos marathon zookeeper chronos
+sudo apt-get install -y mesosphere
+#sudo apt-get install -y mesos marathon zookeeper chronos
 
 # On Slaves, Install Mesos
 #sudo apt-get install -y mesos
@@ -45,6 +46,6 @@ sudo stop mesos-slave
 echo manual | sudo tee /etc/init/mesos-slave.override
 
 # Now Start the Party!
-sudo restart zookeeper
-sudo start mesos-master
-sudo start marathon
+sudo service zookeeper restart
+sudo service mesos-master start
+sudo service marathon start
