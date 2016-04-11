@@ -24,3 +24,15 @@ sudo apt-get install -y mesos marathon zookeeper chronos
 
 # On Slaves, Install Mesos
 #sudo apt-get install -y mesos
+
+# Configure Mesos
+echo $(ec2metadata --local-ipv4) | sudo tee /etc/mesos-master/ip
+sudo cp /etc/mesos-master/ip /etc/mesos-master/hostname
+
+# Configure Marathon
+sudo mkdir -p /etc/marathon/conf
+sudo cp /etc/mesos-master/hostname /etc/marathon/conf
+
+# Define Zookeeper Master for Marathon
+sudo cp /etc/mesos/zk /etc/marathon/conf/master
+
