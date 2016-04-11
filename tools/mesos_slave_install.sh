@@ -19,9 +19,8 @@ echo "deb http://repos.mesosphere.io/${DISTRO} ${CODENAME} main" | sudo tee /etc
 # Run Your Update (Or You Shall Not Pass!)
 sudo apt-get -y update
 
-# On Masters, Install Zookeeper, Mesos, Chronos and Marathon
-
-sudo apt-get install -y mesos marathon chronos
+# On Slaves, Install Mesos
+sudo apt-get install -y mesos
 
 # Configure Mesos
 echo $(ec2metadata --local-ipv4) | sudo tee /etc/mesos-master/ip
@@ -43,8 +42,4 @@ sudo stop mesos-slave
 echo manual | sudo tee /etc/init/mesos-slave.override
 
 # Now Start the Party!
-sudo service zookeeper restart
-sudo service mesos-master restart
-sudo service marathon restart
-sudo service chronos restart
-echo http://`ec2metadata --public-hostname`:8080
+sudo service mesos-slave restart
