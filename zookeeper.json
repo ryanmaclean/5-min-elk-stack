@@ -35,7 +35,7 @@
     "ClusterSize" : {
       "Description" : "Number of nodes to launch",
       "Type" : "Number",
-      "Default": "3"
+      "Default": "1"
     },
     "DockerImage" : {
       "Description" : "Path of the ZK+Exhibitor Docker image (format: '[<registry>[:<port>]/]<repository>:<version>')",
