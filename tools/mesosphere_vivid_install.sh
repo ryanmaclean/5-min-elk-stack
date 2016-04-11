@@ -50,4 +50,4 @@ sudo service zookeeper restart
 sudo service mesos-master restart
 sudo service marathon restart
 sudo service chronos restart
-echo https://`ec2metadata --public-hostname`:8080
+echo http://`ec2metadata --public-hostname`:8080
