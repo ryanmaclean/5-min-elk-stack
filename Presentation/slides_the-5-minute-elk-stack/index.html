@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+	<html class="sl-root base export loaded">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Getting Started with the ELK Stack - Ryan MacLean @ Samsung: Slides</title>
+		<meta name="description" content="Slides">
+
+		<link rel="stylesheet" type="text/css" href="lib/offline-v2.css">
+
+
+
+	</head>
+	<body class="reveal-viewport theme-font-montserrat theme-color-white-blue">
+		<div class="reveal">
+			<div class="slides">
+				<section class="stack" data-id="c1e2649cd34dd9352c981cdd86eb4abb"><section data-id="b001cf0c68550c43994de67ae2792a12"><div data-block-id="659dbc35f1082a7d97be9f1c89903cc4" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 253px; height: auto;"><div style="z-index: 11;" class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Getting Started<br>
+With ELK</h1>
+</div></div>
+<div data-block-id="3e3b7b385a5b057847314f6f381f42e8" style="min-width: 30px; min-height: 30px; width: 360px; height: 118.8px; left: -52px; top: 607px;" data-block-type="image" class="sl-block"><div style="z-index: 12;" class="sl-block-content"><img data-natural-height="528" data-natural-width="1600" style="" data-src="the-5-minute-belk-stack/2389251-Samsung_logo-2.jpg"></div></div></section><section data-id="692834f5a62167948cc6a786d86d27fd"><div data-block-id="fb1ad647d009eeb3d20718169b2237b7" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 21px; height: auto;"><div style="z-index: 11;" class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Ryan MacLean</h1>
+</div></div>
+<div data-block-id="d1602a03814d803fcf9a490526123156" class="sl-block" data-block-type="text" style="width: 800px; left: 81px; top: 136px; height: auto;"><div style="z-index: 12;" class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Subtitle">
+<h2>Senior Engineer<br>
+Samsung Research Canada</h2>
+</div></div>
+<div data-block-id="f2e3f3d58fb5acd6838b865271fc4595" style="min-width: 30px; min-height: 30px; width: 254.694px; height: 300px; left: 353px; top: 330px;" data-block-type="image" class="sl-block"><div style="z-index: 13;" class="sl-block-content"><img data-natural-height="245" data-natural-width="208" style="" data-src="the-5-minute-belk-stack/2389261-67846_10151096756006765_826051114_n1.jpg"></div></div></section><section data-id="3cb91875468fd7ddbe06f62c289c2d5e"><div data-block-id="465b203ffee760c50540e255913cb405" style="min-width: 30px; min-height: 30px; width: 1047.9px; height: 700px; left: -43.95209884643555px; top: 0px;" data-block-type="image" class="sl-block"><div style="z-index: 11;" class="sl-block-content"><img data-natural-height="668" data-natural-width="1000" style="" data-src="the-5-minute-belk-stack/2389139-samsung-pay-logo.jpg"></div></div></section><section data-id="8dcc07d779308d4ed0f2f6f2f554be3e"><div data-block-id="fce5a7f39f632a1c4613f8f8d04f2ac3" style="min-width: 30px; min-height: 30px; width: 1050px; height: 700px; left: -45px; top: -1px;" data-block-type="image" class="sl-block"><div style="z-index: 10;" class="sl-block-content"><img data-natural-height="900" data-natural-width="1350" style="" data-src="the-5-minute-belk-stack/2389143-Samsung_Pay.jpeg"></div></div></section><section data-id="df65482a0048e8acb460d4db7c5ac433"><div class="sl-block" data-block-type="image" data-block-id="1990e5a7f86f58f17a554c1b6fcc1718" style="min-width: 30px; min-height: 30px; width: 216.796875px; height: 300px; left: 49px; top: 385px;"><div class="sl-block-content" style="z-index: 11;"><img data-natural-width="185" data-natural-height="256" style="" data-src="the-5-minute-belk-stack/2419206-logo.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="5ddccf0f4ae7bd42aaeb63ed6a96fcfc" style="min-width: 30px; min-height: 30px; width: 250.44444444444446px; height: 280px; left: 326.77777099609375px; top: 19px;"><div class="sl-block-content" style="z-index: 12;"><img data-natural-width="805" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2419207-GitLab.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="d90b764a10982daf62f15099d1b14d81" style="min-width: 30px; min-height: 30px; width: 460.82222222222225px; height: 356px; left: 545.0888671875px; top: -14px;"><div class="sl-block-content" style="z-index: 13;"><img style="" data-natural-width="1165" data-natural-height="900" data-src="the-5-minute-belk-stack/2419208-Dynatrace_vert_logo_RGB_HTML_2000x1545_hires.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="7f64c7ad3c13a8674b1e319a1a7e69ea" style="min-width: 30px; min-height: 30px; width: 369px; height: 171.62790697674419px; left: 586px; top: 547px;"><div class="sl-block-content" style="z-index: 14;"><img data-natural-width="645" data-natural-height="300" style="" data-src="the-5-minute-belk-stack/2419209-cropped-logo_springbypivotal_horizontal1-645x300.jpg"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="834d67f41bdbbb2396af6b40b5e53c0c" style="min-width: 30px; min-height: 30px; width: 360px; height: 300px; left: 586px; top: 353px;"><div class="sl-block-content" style="z-index: 15;"><img style="" data-natural-width="360" data-natural-height="300" data-src="the-5-minute-belk-stack/2419210-Nginx_logo.svg"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="661547584f65566e24b5a244298bea86" style="min-width: 30px; min-height: 30px; width: 338px; height: 338px; left: -20px; top: -4px;"><div class="sl-block-content" style="z-index: 16;"><img data-natural-width="800" data-natural-height="800" style="" data-src="the-5-minute-belk-stack/2419211-Ansible_logo.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="4164872e394f36fd49822d91add89b18" style="min-width: 30px; min-height: 30px; width: 360px; height: 300px; left: 251px; top: 361px;"><div class="sl-block-content" style="z-index: 17;"><img data-natural-width="360" data-natural-height="300" style="" data-src="the-5-minute-belk-stack/2419212-Java_Logo.svg"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="174a76806dab9dab1dd9b5571b7fcdb2" style="min-width: 30px; min-height: 30px; width: 360px; height: 300px; left: 599px; top: 245px;"><div class="sl-block-content" style="z-index: 18;"><img data-natural-width="360" data-natural-height="300" style="" data-src="the-5-minute-belk-stack/2419213-Python_logo_and_wordmark.svg"></div></div></section><section data-id="2d3b7e11dbf31ce19e0f6d851ff00d34"><div class="sl-block" data-block-type="image" data-block-id="70b6d744086d3b0cbe6d8c8ed162b6fc" style="min-width: 30px; min-height: 30px; width: 206.11111111111111px; height: 350px; left: 186px; top: 0px;"><div class="sl-block-content" style="z-index: 11;"><img data-natural-width="530" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2419224-elastic-beats-fw.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="8d9d981ba4687f1bed80755c65185cd4" style="min-width: 30px; min-height: 30px; width: 311.88888888888886px; height: 350px; left: 533px; top: 0px;"><div class="sl-block-content" style="z-index: 12;"><img data-natural-width="802" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2419220-elastic-elasticsearch-fw.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="2a301865c131899b43dde74d6ce8b030" style="min-width: 30px; min-height: 30px; width: 228.66666666666666px; height: 350px; left: 171px; top: 350px;"><div class="sl-block-content" style="z-index: 13;"><img data-natural-width="588" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2419218-elastic-logstash-fw.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="4557efaec03325616bf2b9190c84e650" style="min-width: 30px; min-height: 30px; width: 204.94444444444446px; height: 350px; left: 580px; top: 350px;"><div class="sl-block-content" style="z-index: 14;"><img data-natural-width="527" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2419226-elastic-kibana-fw.png"></div></div></section><section data-id="0ddb0f850c7ec66525a495229a287fb1"><div class="sl-block" data-block-type="image" data-block-id="aab6bbc8b1b35fcfbf1ae40a506042a8" style="min-width: 30px; min-height: 30px; width: 733.4444444444443px; height: 700px; left: 113px; top: 0px;"><div class="sl-block-content" style="z-index: 11;"><img style="" data-natural-width="943" data-natural-height="900" data-src="the-5-minute-belk-stack/2476088-MySql-performance.png"></div></div></section><section data-id="a6ea17dd7a856ec93a793bb2cfa0c3b7"><div class="sl-block" data-block-type="image" data-block-id="2f368867e8f8c69d04482da2ebabef7b" style="min-width: 30px; min-height: 30px; width: 733.4444444444443px; height: 700px; left: 113px; top: 0px;"><div class="sl-block-content" style="z-index: 11;"><img style="" data-natural-width="943" data-natural-height="900" data-src="the-5-minute-belk-stack/2476089-PgSql-performance.png"></div></div></section><section data-id="8798f73522e6a2e0408b9a9cd14053b0"><div class="sl-block" data-block-type="image" data-block-id="a2ddc29d3d682e165abd521ab2bc2ab8" style="min-width: 30px; min-height: 30px; width: 451.11111111111114px; height: 700px; left: 0px; top: 0px;"><div class="sl-block-content" style="z-index: 11;"><img data-natural-width="580" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2476091-Topbeat-statistics.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="e8a77b9a82b566bc412fa0f4e4da4a63" style="min-width: 30px; min-height: 30px; width: 509px; height: 262.453125px; left: 451px; top: 0px;"><div class="sl-block-content" style="z-index: 12;"><img style="" data-natural-width="1600" data-natural-height="825" data-src="the-5-minute-belk-stack/2476094-NFS-dashboard.png"></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="cd3ecaa0ba8119c657ff8f7abbe2fe3e" style="min-width: 30px; min-height: 30px; width: 458.44px; height: 438px; left: 477px; top: 262px;"><div class="sl-block-content" style="z-index: 13;"><img data-natural-width="942" data-natural-height="900" style="" data-src="the-5-minute-belk-stack/2476096-Thrift-performance.png"></div></div></section><section data-id="a1b6572976f0faafd8f79915dff83eaf"><div class="sl-block" data-block-type="text" data-block-id="56e9716cf547a3dcf9fe0bc0640bd2a1" style="height: auto; min-width: 30px; min-height: 30px; width: 960px; left: 0px; top: 311px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; font-size: 200%; text-align: left;">
+<p style="color:rgb(51, 51, 51); text-align:center">load.sh -url "http://es:9200"</p>
+</div></div></section><section data-id="c913b7d169ba76225eb910c50948f582"><div data-block-id="6fe3542f7343ab0802bd1e668ca9df5d" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>First, A Comparison</h1>
+</div></div></section><section data-id="09e99bb0821da718a8c1f71bc4e2c672"><div data-block-id="23661e968f97b7d0d160a1e1f007a5f3" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Elastic ElasticSearch VS Your Own</h1>
+</div></div></section><section data-id="13a987fc9dad51c1a3e873c1a7f3ade4"><div data-block-id="563356f20ddd35a33ba0d7193dc06414" class="sl-block" data-block-type="text" style="width: 410px; left: 49px; top: 106px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="text-align: left; z-index: 10;">
+<h2>AWS ES</h2>
+</div></div>
+<div data-block-id="d36aedb4731b8ea7cb991d88bd967bb2" class="sl-block" data-block-type="text" style="width: 410px; left: 49px; top: 200px; height: auto;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis." style="text-align: left; z-index: 11;">
+<ul>
+	<li>Fast</li>
+	<li>Easy</li>
+	<li>512GB Limit Per Node (10 Node Max)</li>
+	<li>Specific Versions</li>
+	<li>Limited Plugins</li>
+	<li>Limited Vertical Scaling</li>
+	<li>Limited Horizontal Scaling</li>
+</ul>
+</div></div>
+<div data-block-id="fff06efbdbcb3cf8c407532e5f16505a" class="sl-block" data-block-type="text" style="width: 410px; left: 499px; top: 106px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="text-align: left; z-index: 12;">
+<h2>Artisanal ES</h2>
+</div></div>
+<div data-block-id="34ba007b19edce173039b551e452207f" class="sl-block" data-block-type="text" style="width: 410px; left: 499px; top: 200px; height: auto;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis." style="text-align: left; z-index: 13;">
+<ul>
+	<li>Fast</li>
+	<li>Easy-ish</li>
+	<li>Limited by Your Wallet</li>
+	<li>Mix-and-Match Versions</li>
+	<li>Feast on Plugins</li>
+	<li>(Virtually) Unlimited Vertical and Horizontal Scaling</li>
+</ul>
+</div></div>
+<div data-block-id="4d6a4e42ebded0c7a16486d8359f3d06" style="height: auto; min-width: 30px; min-height: 30px; width: 659px; left: 0px; top: 670px;" data-block-type="text" class="sl-block"><div style="z-index: 15; text-align: left; font-size: 46%;" data-placeholder-text="Text" data-placeholder-tag="p" class="sl-block-content">
+<p>* <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html" target="_blank">http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html</a></p>
+</div></div></section><section data-id="f24691c7a8e3cceeb6fde391f350453c"><div data-block-id="0a9d467ba0403bf99b374f6657bdcec7" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 190px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Choose AWS ElasticSearch</h2>
+</div></div>
+<div data-block-id="1dd91c8696abab553d7b45b3612fbb62" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 264px; height: auto;"><div data-placeholder-text="Text" data-placeholder-tag="p" class="sl-block-content">
+<ul>
+	<li>Only When You're Using AWS</li>
+	<li>When You Won't Have More than 512GB for a While</li>
+	<li>When You Don't Need Specific Plugins</li>
+</ul>
+</div></div></section><section data-id="3ea657aecd08f760ea229694c33dd86a"><div data-block-id="eda27680c1d3df8d6576997b5b1181c7" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 190px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Choose DIY ElasticSearch</h2>
+</div></div>
+<div data-block-id="96d15fac3ee610f2307af4188dcff3a5" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 264px; height: auto;"><div data-placeholder-text="Text" data-placeholder-tag="p" class="sl-block-content">
+<ul>
+	<li>If You're Not on AWS</li>
+	<li>If You Need to Scale Very Quickly</li>
+	<li>If Your Measurements Show 512GB Will Not Be Enough</li>
+</ul>
+</div></div></section><section data-id="65fc4661a09244f08d3dc606218dc3e8"><div class="sl-block" data-block-type="image" data-block-id="5552824adb508d775acba77aefc8530d" style="min-width: 30px; min-height: 30px; width: 784.7777777777778px; height: 700px; left: 87px; top: 0px;"><div class="sl-block-content" style="z-index: 11;"><img style="" data-natural-width="1009" data-natural-height="900" data-src="the-5-minute-belk-stack/2419244-large_v-trans.png"></div></div></section><section data-id="9363dcb4f7d1b47891f33bd255a515ea"><div data-block-id="75436c9d44624de84589954141c239d3" class="sl-block" data-block-type="text" style="width: 960px; left: 0px; top: 270px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>GitHub Repository</h1>
+
+<p>git pull --recursive https://github.com/ryanmaclean/5-min-elk-stack</p>
+</div></div></section><section data-id="ab556f53df7ef49293e9e8ed34a9de9d"><div class="sl-block" data-block-type="text" data-block-id="aa3b49dc348bd8c4e761b6e6cdb504e1" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 180px; top: 331px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; font-size: 200%;">
+<p>docker-compose up</p>
+</div></div></section><section data-id="c6e470ca4d8bb109320d70ee877809e6"><div data-block-id="0f11c787544148ae85d572ae12ed882c" class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Thanks!</h1>
+
+<p>DevOps Slack - https://devopschat.co/</p>
+</div></div></section><section data-id="57bd8685397e9d7b459c4f59c8dfa110"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="c8dc899b99d4d32ef578119a5944cc0e"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>We're Hiring</h1>
+</div></div></section></section>
+			</div>
+		</div>
+
+		<script>
+			var SLConfig = {"deck": {"id":646083,"slug":"the-5-minute-belk-stack","title":"Getting Started with the ELK Stack - Ryan MacLean @ Samsung","description":"My DevOps Days Vancouver 2016 Ignite Presentation about Beats, ElasticSearch, Logstash and Kibana that we use for Samsung Pay ","visibility":"all","published_at":"2016-03-25T12:52:06.677Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/5a4007eefef2a4e689645a130a189266/thumb.jpg","view_count":23,"user":{"id":475143,"username":"ryanmaclean","name":"Ryan MacLean","description":"","thumbnail_url":"https://lh3.googleusercontent.com/-hLyXm4a9cpM/AAAAAAAAAAI/AAAAAAAABGU/JRIpKwIFRvY/photo.jpg?sz=50","beta_collaboration":false,"pro":true,"enterprise":false,"enterprise_manager":false,"settings":{"id":316680,"present_controls":true,"present_upsizing":true,"present_notes":true},"registered":true},"background_transition":"slide","transition":"slide","theme_id":null,"theme_font":"montserrat","theme_color":"white-blue","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":true,"rolling_links":false,"center":false,"should_loop":false,"share_notes":true,"slide_number":true,"rtl":false,"version":2,"collaborative":null,"notes":{"b001cf0c68550c43994de67ae2792a12":"Getting Started with ELK the easy way","692834f5a62167948cc6a786d86d27fd":"I'll be your presenter today! \n\nHere's a funny photo of me with a bad moustache, silly haircut and glasses two sizes too large for my face. \n\nI'm a senior engineer for Samsung Research Canada in the B2B Cloud Lab. Look! They even gave me a t-shirt!","6b313037d699a710e1281b8233a04a0e":"","a8e258aac2d0cfe5ee6038ab82fa10c5":"As is typical, I'll give you a Safe Harbour slide, but the TL;DR version is this: don't sell or invest based on anything I say today :)","3cb91875468fd7ddbe06f62c289c2d5e":"These days I spend most of my time on a project called Samsung Pay. This app allows you to pay for things anywhere you can swipe or tap a card for shiny things.\n","8dcc07d779308d4ed0f2f6f2f554be3e":"Sort of like this! Samsung Pay isn't available in Canada yet, but we've certainly been working on it!\n\n\nAs you'd expect, this involves a LOT of data, and the ELK stack plays a critical role on a day-to-day basis. ","c913b7d169ba76225eb910c50948f582":"Let's start off by going over the reasons for building your own ELK stack as you could certainly use Amazon's service, Elastic's offering or third-party tools. \nOur assumption is that you don't want the data to leave your AWS account, so it leaves us with a couple of free options. ","09e99bb0821da718a8c1f71bc4e2c672":"It just rolls off the tongue, right? Elastic Elasticsearch! We'll compare it to a BYOE solution. That's Bring Your Own ElasticSearch for those following along :) ","13a987fc9dad51c1a3e873c1a7f3ade4":"This is a comparison slide. I'm not going to read these bullet points, but rest assured: we're going for the option that allows over 5 terrabytes of storage and more with all the plugins you could think of and dashboards to make any pointy haired boss squeal with delight. ","f24691c7a8e3cceeb6fde391f350453c":"Just a couple of slides to simplify the decision if ever you're asked about this later. ","3ea657aecd08f760ea229694c33dd86a":"This is of course what we did because we'll be tracking 100s of servers, right?","b127518374ad5e0333b5a30a1b4cade9":"The only difference between our stack and the ELK that you are used to is that we're adding Beats. Well Beats and a few other nice things in the background, but mainly Beats, specifically FileBeat. ","2d3b7e11dbf31ce19e0f6d851ff00d34":"For those of you already using ELK, the only difference between the stack I'm talking about today and the ELK that you are used to is that we're adding Beats. Well Beats and a few other nice things in the background, but mainly Beats.","540409d2fb1e12078e8c59c9b3ea8117":"The crazy open source database you know and love at 2AM when PagerDuty calls you. ","76936ea7b4deeecfcf19e3d3533e5587":"The cool helper dude how un-mangles your logs and allows you to continue with Java multi-line spiels (while limiting you to single cores). ","c832faeed67daaa8d39d1071bb1e043d":"The Node front end that now has some very interesting plugins. ","93809e7c51ad6bbedce42e0f3017f2c8":"We'll be using AWS for our infrastructure, and creating it in an automated fashion. ","541f65f16421d9ae1cc1a63e13fa1612":"I picked Mesos as it allows for the use of two tools I'm in love with: ","ba2afb6cd4418b982556854d3ff41885":"The first of which is Marathon. A gross oversimplification is this: it allows you to schedule containers on Mesos. ","65fc4661a09244f08d3dc606218dc3e8":"I tried a lot of different ways to get a script that would make this incredibly quick, and it came down to everyone's favourite buzz-word: Docker. Used with docker-compose, we can link services together and start them with only one command!","ab556f53df7ef49293e9e8ed34a9de9d":"It really couldn't be easier!\n\nThis assumes you've got both Docker and docker-composed installed, but if not, there are helper scripts for Ubuntu in the tools folder, and links in the readme for Windows, Mac and RPM-based distro users. ","c49fe80a59192c7074e337d70cd75870":"Let's go over the build while the build is... building. ","2d395c8a4993e836d8efe58b8924f011":"As mentioned we're using Cloudformation: a way for us to create instances, endpoints, security groups, DNS entries and load balancers. ","dce36a23351bb90d9b8b525823b4d4dd":"Here's the first Cloudformation template that creates the Mesos masters for us. ","dd7e69372ef83795a27752b94dc39fe7":"The second template makes the slaves. ","09c18987eeea0a32b579bd7d2e8ab151":"The third creates all of the requirements for the first two, and calls them in order to provide these resources to the child templates. Don't worry, there's a GitHub repo for you at the end!","93c2d5ad640e3da0c8847512f0f79080":"Because we're scheduling containers on the instances and we want to makes sure we've vendored our dependencies, we're using our own S3-backed Docker Repository.","0eb65b0140d36a67db0048a0460ab8c7":"In the interest of time, the config management is done in docker files in the repository. Unfortunately this seemed to be faster than both Ansible and Chef, though both can certainly be used to set up the container hosts and kick off Cloudformation. ","9363dcb4f7d1b47891f33bd255a515ea":"First just recursively grab the git repository for this talk. ","d5fa6b7b361ed43bad8b1e9caed481df":"Let's have a look at our endpoint!","c6e470ca4d8bb109320d70ee877809e6":"Thanks a lot for your time, and if you'd like to chat about this topic or anything else, I can usually be found lurking about in the DevOps Chat Slack. ","df65482a0048e8acb460d4db7c5ac433":"We use an awful lot of tools at Samsung other than ELK, but here's a NASCAR slide for the ones my team uses the most often.","57bd8685397e9d7b459c4f59c8dfa110":"The requisite DevOps \"we're hiring\" slide these days... Please see me after the talk, connect on GitHub or Slack chat or email for more info!","8798f73522e6a2e0408b9a9cd14053b0":"On the left we have packet data for many servers from Packetbeat, top right is NFS stats, and the bottom right is from Thrift. \n\n","0ddb0f850c7ec66525a495229a287fb1":"Beats allows us to do some very impressive things out of the box. Look: here's a fancy MySQL dashboard!","a6ea17dd7a856ec93a793bb2cfa0c3b7":"And PostgreSQL! Oooh shiny!","a1b6572976f0faafd8f79915dff83eaf":"And these are just the default dashboards, one simple command installs them. "}}};
+			SLConfig.current_user = {
+				name: "Ryan MacLean",
+				username: "ryanmaclean",
+				pro: true
+			};
+		</script>
+
+		<script src="lib/head.min.js"></script>
+		<script src="lib/reveal.min.js"></script>
+		<script>
+			// Make Slides speaker notes available in the reveal.js speaker view
+			if( SLConfig.deck.notes ) {
+				[].forEach.call( document.querySelectorAll( '.reveal .slides section' ), function( slide ) {
+
+					var value = SLConfig.deck.notes[ slide.getAttribute( 'data-id' ) ];
+					if( value && typeof value === 'string' ) {
+						slide.setAttribute( 'data-notes', value );
+					}
+
+				} );
+			}
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				mouseWheel: false,
+				showNotes: SLConfig.deck.share_notes,
+				slideNumber: SLConfig.deck.slide_number,
+
+				autoSlide: SLConfig.deck.auto_slide_interval || 0,
+				autoSlideStoppable: true,
+
+				rolling_links: SLConfig.deck.rolling_links || true,
+				center: SLConfig.deck.center || false,
+				loop: SLConfig.deck.should_loop || false,
+				rtl: SLConfig.deck.rtl || false,
+
+				transition: SLConfig.deck.transition,
+				backgroundTransition: SLConfig.deck.background_transition,
+
+				maxScale: 2,
+
+				dependencies: [
+					{ src: 'lib/reveal-plugins/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/reveal-plugins/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/reveal-plugins/highlight/highlight.js', async: true, callback: function() { hljs.initHighlighting(); hljs.initHighlightingOnLoad(); } },
+					{ src: 'lib/reveal-plugins/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+		</script>
+
+		
+
+	</body>
+</html>
