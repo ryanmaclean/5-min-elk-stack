@@ -1,2 +1,2 @@
-5 Minute BELK Stack
+5 Minute ELK Stack
 ===================
