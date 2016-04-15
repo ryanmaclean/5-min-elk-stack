@@ -29,7 +29,7 @@ cd ../beats-dashboards
 # Change localhost to docker-machine IP on Windows and Mac
 ```
 
-You can then access Kibana at http://localhost:5601
+You can then access Kibana at [http://localhost:5601](http://localhost:5601)
 
 
 ## Intro
