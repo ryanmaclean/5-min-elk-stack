@@ -1,8 +1,28 @@
 5 Minute BELK Stack
 ===================
-## Architecture
+## Proposed Architecture
 
 ![5 Minute BELK Stack Architecture](infrastructure/architecture.png)
+
+## Getting Started
+
+First, clone this repository recursively:
+
+`git clone --recursive http://github.com/ryanmaclean/5-min-elk-stack.git`
+
+Next, let's make sure docker-compose is installed:
+
+`pip install docker-compose`
+
+Now we can move to the "docker-elk" folder and run `docker-compose`:
+
+```
+cd 5-min-elk-stack/docker-elk
+docker-compose up
+```
+
+You can then access Kibana at http://localhost:5601 (http://192.168.99.1xx:5601 if you're on a Mac)
+
 
 ## Intro
 A set of Cloudformation scripts that make it easy to stand up ElasticSearch, Logstash and Kibana with the plan of feeding them metrics via Beats. 
