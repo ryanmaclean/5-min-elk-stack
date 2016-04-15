@@ -26,6 +26,7 @@ Next, let's add the Beats dashboards:
 ```
 cd ../beats-dashboards
 ./load.sh -url "http://localhost:9200"
+# Change localhost to docker-machine IP on Windows and Mac
 ```
 
 You can then access Kibana at http://localhost:5601 (http://192.168.99.1xx:5601 if you're on a Mac)
