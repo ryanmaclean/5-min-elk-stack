@@ -21,6 +21,13 @@ cd 5-min-elk-stack/docker-elk
 docker-compose up
 ```
 
+Next, let's add the Beats dashboards:
+
+```
+cd ../beats-dashboards
+./load.sh -url "http://localhost:9200"
+```
+
 You can then access Kibana at http://localhost:5601 (http://192.168.99.1xx:5601 if you're on a Mac)
 
 
