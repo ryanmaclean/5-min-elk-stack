@@ -2,7 +2,7 @@
 ===================
 ## Architecture
 
-![5 Minute BELK Stack Architecture](architecture.png)
+![5 Minute BELK Stack Architecture](infrastructure/architecture.png)
 
 ## Intro
 A set of Cloudformation scripts that make it easy to stand up ElasticSearch, Logstash and Kibana with the plan of feeding them metrics via Beats. 
