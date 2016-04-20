@@ -1,6 +1,4 @@
-5 Minute BELK Stack
-===================
-## Architecture
+# Mesos Infrastructure
 
 ![5 Minute BELK Stack Architecture](architecture.png)
 
