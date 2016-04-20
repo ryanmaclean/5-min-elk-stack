@@ -80,8 +80,6 @@ aws ec2 describe-instances | grep PrivateIpAddress | cut -d ':' -f 2 | head -1 |
 more /var/log/cloud-init-output.log
 ```
 
-ssh -i ~/.ssh/5minelk.pem ubuntu@10.5.5.47
-
 ## SSH To One of the New Instances
 
 ```
